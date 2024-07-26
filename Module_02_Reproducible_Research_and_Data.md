@@ -98,7 +98,7 @@ The following code shows how long it takes to load a 59.5 Mb file with 500,000 r
 
 ```
 ##    user  system elapsed 
-##    4.10    0.12    4.22
+##    4.35    0.14    4.50
 ```
 
 Here I've wrapped the 'system.time' function call around the 'read.csv' function that loads the data file so that I can time it. This can be useful if you ever want to know how long a particular part of your analysis takes.
@@ -115,7 +115,7 @@ print(binary_speed)
 
 ```
 ##    user  system elapsed 
-##    0.83    0.02    0.85
+##    0.88    0.01    0.89
 ```
 
 The loading of the binary data file was over **5** times faster than loading the csv file!

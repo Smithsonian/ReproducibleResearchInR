@@ -490,7 +490,7 @@ with 500,000 rows of data and 13 variables.</p>
 <pre class="r"><code>    csv_speed&lt;-system.time(data&lt;-read.csv(&quot;H:/Downloads/500000-Sales-Records/500000 Sales Records.csv&quot;))
     print(csv_speed)</code></pre>
 <pre><code>##    user  system elapsed 
-##    4.10    0.12    4.22</code></pre>
+##    4.35    0.14    4.50</code></pre>
 <p>Here I’ve wrapped the ‘system.time’ function call around the
 ‘read.csv’ function that loads the data file so that I can time it. This
 can be useful if you ever want to know how long a particular part of
@@ -505,7 +505,7 @@ that it can be reopened at least 10 times faster then .</p>
 binary_speed&lt;-system.time(load(file=&quot;data/500k_Sales_Records.Rdata&quot;))
 print(binary_speed)</code></pre>
 <pre><code>##    user  system elapsed 
-##    0.83    0.02    0.85</code></pre>
+##    0.88    0.01    0.89</code></pre>
 <p>The loading of the binary data file was over <strong>5</strong> times
 faster than loading the csv file!</p>
 </div>
