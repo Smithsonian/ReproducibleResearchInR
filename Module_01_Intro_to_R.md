@@ -1,15 +1,13 @@
 ---
 title: 'Module 1:  Introduction to R'
 author: "Brian P Steves"
-date: "`r Sys.Date()`"
+date: "2024-07-26"
 output: 
   html_document: 
     keep_md: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
-```
+
 
 Module 1: Introduction to R
 ====================
@@ -72,9 +70,9 @@ In RStudio, this console has its own window called "Console" and should start up
 
 To quit R use the following command at the console prompt
 
-```{r echo=TRUE, eval=FALSE}
-q()
 
+```r
+q()
 ```
  of if you quit RStudio it will quit you out of R.
 
@@ -83,24 +81,24 @@ q()
 
 You can get help on a specific topic using the "help()" function.  An alternative shortcut to help is "?"
 
-```{r eval=FALSE}
 
+```r
 help("lm")
-
 ```
 While using "?" is usually easier, there are time when the full help function is better.   For example "?if" will not evaluate while "help('if')" returns a help file about "Control Flow" which is probably what you want.
 
 
 You can also search the help files using "help.search()" function when you don't know the exact command you want help on.  The short cut to this is to use "??".
 
-```{r eval=FALSE}
-help.search("lm")
 
+```r
+help.search("lm")
 ```
 
 To run examples from a paticular function...
 
-```{r eval=FALSE}
+
+```r
 example("lm")
 ```
 
@@ -109,25 +107,35 @@ example("lm")
 
 To can assign a data structure to an object using "<-" or "->" or the "assign()" function.  The following are all equivalent.
 
-```{r}
+
+```r
 x<-c(10,7,4,5)
 
 c(10,7,4,5) -> x
 
 assign("x", c(10,7,4,5))
-
 ```
 
 Calling the object by name with print it
 
-```{r}
+
+```r
 x
+```
+
+```
+## [1] 10  7  4  5
 ```
 
 If you don't assign a result to an object the resulting value is printed and lost.
 
-```{r}
+
+```r
 c(10,7,4,5)
+```
+
+```
+## [1] 10  7  4  5
 ```
 
 
@@ -135,8 +143,13 @@ c(10,7,4,5)
 
 All of the current ojects in memory can be listed using the "ls()" or "objects()" functions.
 
-```{r}
+
+```r
 ls()
+```
+
+```
+## [1] "x"
 ```
 
 #### 3.1.5  Recalling previous commands
@@ -152,7 +165,8 @@ Once an R script is written and saved it can be evaluated in R using the "source
 
 If you plan on running more than a couple lines of code it really helps to use script files as it is much easier to edit a script file and rerun it than it is to retype a long series of commands over again.
 
-```{r eval=FALSE}
+
+```r
 source("myScript.R")
 ```
 
@@ -183,15 +197,24 @@ If you already know which statistical technique you are looking to employ but do
 ### 4.2 Installing Packages
 Once you know which R package you want to install you use the "install.packages()" command to install it.
 
-```{r}
+
+```r
 install.packages("vegan", repos='http://cran.us.r-project.org')
+```
+
+```
+## 
+##   There is a binary version available but the source version is later:
+##       binary  source needs_compilation
+## vegan  2.6-4 2.6-6.1              TRUE
 ```
 If you haven't told R or RStudio where you want to download this package from, it may ask you for you to select a mirror.  You'll probably want to pick either the closest mirror server or one that you feel is the quickest.    Once the package is downloaded, R will attempt to install it on your computer.  If anything goes wrong in the installation an error will be reported.  Packages can be installed for all users on the computer or just one specific user.  If you don't have full admin rights on your computer your package will be installed in a local user library of packages.
 
 ### 4.3 Loading Packages
 To load an install package for use you use the "library()" function.
 
-```{r}
+
+```r
 library(vegan)
 ```
 
