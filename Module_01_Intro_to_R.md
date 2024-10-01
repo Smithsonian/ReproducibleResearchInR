@@ -1,9 +1,9 @@
 ---
 title: 'Module 1:  Introduction to R'
 author: "Brian P Steves"
-date: "2024-07-26"
-output: 
-  html_document: 
+date: "2024-09-27"
+output:
+  html_document:
     keep_md: yes
 ---
 
@@ -205,8 +205,8 @@ install.packages("vegan", repos='http://cran.us.r-project.org')
 ```
 ## 
 ##   There is a binary version available but the source version is later:
-##       binary  source needs_compilation
-## vegan  2.6-4 2.6-6.1              TRUE
+##       binary source needs_compilation
+## vegan  2.6-4  2.6-8              TRUE
 ```
 If you haven't told R or RStudio where you want to download this package from, it may ask you for you to select a mirror.  You'll probably want to pick either the closest mirror server or one that you feel is the quickest.    Once the package is downloaded, R will attempt to install it on your computer.  If anything goes wrong in the installation an error will be reported.  Packages can be installed for all users on the computer or just one specific user.  If you don't have full admin rights on your computer your package will be installed in a local user library of packages.
 
