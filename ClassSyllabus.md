@@ -15,9 +15,9 @@ output:
 
 ## 2. [Reproducible Research and Data](Module_02_Reproducible_Research_and_Data.html)
 
-## 3. [Creating, Importing, and Exporting Data](Module_03_data_basics.html)
+## 3. [Creating, Importing, and Exporting Data](Module_03_Data_Basics.html)
 
-## 4. Filtering and Subsetting Data
+## 4. [Filtering and Subsetting Data](Module_04_Filtering_and_Subsetting.html)
 
 ## 5. Resshaping Data
 
