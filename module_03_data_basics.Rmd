@@ -1,7 +1,7 @@
 ---
 output:
-  html_document: default
-  pdf_document: default
+  html_document: 
+    keep_md: yes
 ---
 Reproducible Research, Spring 2021
 
@@ -130,7 +130,8 @@ You can enter the file location manually
 for example.. 
 
 ```{r}
-mtcars <- read_csv("/home/bsteves/R/x86_64-pc-linux-gnu-library/4.2/readr/extdata/mtcars.csv")
+#mtcars <- read_csv("/home/bsteves/R/x86_64-pc-linux-gnu-library/4.2/readr/extdata/mtcars.csv")
+mtcars <- read_csv("C:\\Users\\stevesb\\OneDrive - Smithsonian Institution\\Documents\\R\\win-library\\4.1\\readr\\extdata\\mtcars.csv")
 ```
 But this will vary from system to system and will need to be edited to work on your system.  You can also just specify file location by wrapping read_csv around readr_example()
 

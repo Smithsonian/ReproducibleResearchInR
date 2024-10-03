@@ -531,11 +531,9 @@ print(mtcars)</code></pre>
 ## Volvo 142E          21.4   4 121.0 109 4.11 2.780 18.60  1  1    4    2</code></pre>
 <pre class="r"><code># mtcars &lt;- read_csv(&quot;/home/bsteves/R/x86_64-pc-linux-gnu-library/4.2/readr/extdata/mtcars.csv&quot;)</code></pre>
 <p>You can enter the file location manually for example..</p>
-<pre class="r"><code>mtcars &lt;- read_csv(&quot;/home/bsteves/R/x86_64-pc-linux-gnu-library/4.2/readr/extdata/mtcars.csv&quot;)</code></pre>
-<pre><code>## Rows: 32 Columns: 11
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## dbl (11): mpg, cyl, disp, hp, drat, wt, qsec, vs, am, gear, carb
+<pre class="r"><code>#mtcars &lt;- read_csv(&quot;/home/bsteves/R/x86_64-pc-linux-gnu-library/4.2/readr/extdata/mtcars.csv&quot;)
+mtcars &lt;- read_csv(&quot;C:\\Users\\stevesb\\OneDrive - Smithsonian Institution\\Documents\\R\\win-library\\4.1\\readr\\extdata\\mtcars.csv&quot;)</code></pre>
+<pre><code>## Rows: 0 Columns: 0
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
@@ -565,7 +563,8 @@ of data that doesn’t get guessed properly.</p>
 <pre class="r"><code># check out problems
 problems(df1)</code></pre>
 <pre><code>## # A tibble: 0 × 5
-## # ℹ 5 variables: row &lt;int&gt;, col &lt;int&gt;, expected &lt;chr&gt;, actual &lt;chr&gt;, file &lt;chr&gt;</code></pre>
+## # … with 5 variables: row &lt;int&gt;, col &lt;int&gt;, expected &lt;chr&gt;, actual &lt;chr&gt;,
+## #   file &lt;chr&gt;</code></pre>
 <pre class="r"><code># change guess to use 1001 rows
 df2 &lt;- read_csv(readr_example(&quot;challenge.csv&quot;), guess_max = 1001)</code></pre>
 <pre><code>## Rows: 2000 Columns: 2
@@ -632,7 +631,7 @@ read_csv(). The usage of read.csv() is very similar to read_csv().</p>
 # read.csv time
 system.time(read.csv(&quot;data/customers-100000.csv&quot;))</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.795   0.024   0.819</code></pre>
+##    0.51    0.01    0.53</code></pre>
 <pre class="r"><code># read_csv time
 system.time(read_csv(&quot;data/customers-100000.csv&quot;))</code></pre>
 <pre><code>## Rows: 100000 Columns: 12
@@ -645,7 +644,7 @@ system.time(read_csv(&quot;data/customers-100000.csv&quot;))</code></pre>
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre><code>##    user  system elapsed 
-##   0.479   0.015   0.405</code></pre>
+##    0.40    0.11    0.33</code></pre>
 <p>Beyond the speed increase, here are a couple other benefits to using
 readr over base R for text file importing.</p>
 <p>1.) readr returns a tibble, which is a tidyverse improvement over a
@@ -768,10 +767,9 @@ database.</p>
 <pre><code>## Loading required package: DBI</code></pre>
 <pre class="r"><code># create a RMySQL.cnf file.  This is set up ahead of time on your computer.
 
-con &lt;- RMySQL::dbConnect(MySQL(), group = &#39;GlobalInvHist_be_local&#39;)
-
-
-# You could also connect directly with the connection string.  
+con &lt;- RMySQL::dbConnect(MySQL(), group = &#39;GlobalInvHist_be_local&#39;)</code></pre>
+<pre><code>## Error in .local(drv, ...): Failed to connect to database: Error: Access denied for user &#39;stevesb&#39;@&#39;localhost&#39; (using password: NO)</code></pre>
+<pre class="r"><code># You could also connect directly with the connection string.  
 # This is just an example and will throw an error on my computer because those credentials are fake.
 
 con &lt;- RMySQL::dbConnect(MySQL(), 
@@ -798,36 +796,36 @@ information with in the console.</p>
 dbListTables(con)</code></pre>
 <pre><code>##  [1] &quot;Alerts&quot;                     &quot;BroadRanges&quot;               
 ##  [3] &quot;Citations&quot;                  &quot;Codes&quot;                     
-##  [5] &quot;CommonNames&quot;                &quot;Dist2&quot;                     
-##  [7] &quot;Distributions&quot;              &quot;EPV&quot;                       
-##  [9] &quot;Ecology&quot;                    &quot;EcologyKeywords&quot;           
-## [11] &quot;EcologyParameterValues&quot;     &quot;EcologyParameterValues_old&quot;
-## [13] &quot;Glossary&quot;                   &quot;Groups&quot;                    
-## [15] &quot;Habitats&quot;                   &quot;HigherTaxonomy&quot;            
-## [17] &quot;Images&quot;                     &quot;Impacts&quot;                   
-## [19] &quot;Journals_old&quot;               &quot;NativeRanges&quot;              
-## [21] &quot;NewsItems&quot;                  &quot;NumInvPerReg&quot;              
-## [23] &quot;Occ2&quot;                       &quot;Occurrences&quot;               
-## [25] &quot;Occurrences2&quot;               &quot;Occurrences_bckup&quot;         
-## [27] &quot;PICES_LifeHist&quot;             &quot;PICES_Occ&quot;                 
-## [29] &quot;Polygons&quot;                   &quot;Potential_MisIDs&quot;          
-## [31] &quot;References_old&quot;             &quot;Regions&quot;                   
-## [33] &quot;SpeciesComments&quot;            &quot;SpeciesComments2&quot;          
-## [35] &quot;Synonyms&quot;                   &quot;Table1&quot;                    
-## [37] &quot;Table2&quot;                     &quot;Taxonomy&quot;                  
-## [39] &quot;Vectors&quot;                    &quot;WORMS_Common_Names&quot;        
-## [41] &quot;WORMS_Synonyms&quot;             &quot;WORMS_Taxonomy&quot;            
-## [43] &quot;WebLinks&quot;                   &quot;commeco&quot;                   
-## [45] &quot;countries&quot;                  &quot;dailyinvaders&quot;             
-## [47] &quot;economy&quot;                    &quot;invhst&quot;                    
-## [49] &quot;journals&quot;                   &quot;lfhsp&quot;                     
-## [51] &quot;new_occ&quot;                    &quot;old_occ&quot;                   
-## [53] &quot;refs&quot;                       &quot;spimgs&quot;                    
-## [55] &quot;splinks&quot;                    &quot;tables_fields&quot;             
-## [57] &quot;taxa&quot;                       &quot;taxa_cits&quot;                 
-## [59] &quot;taxanew&quot;                    &quot;taxon&quot;                     
-## [61] &quot;tbl_factsheets&quot;             &quot;tbl_species_new&quot;           
-## [63] &quot;users&quot;</code></pre>
+##  [5] &quot;commeco&quot;                    &quot;CommonNames&quot;               
+##  [7] &quot;countries&quot;                  &quot;dailyinvaders&quot;             
+##  [9] &quot;Dist2&quot;                      &quot;Distributions&quot;             
+## [11] &quot;DistributionsMEOW&quot;          &quot;Ecology&quot;                   
+## [13] &quot;EcologyKeywords&quot;            &quot;EcologyParameterValues&quot;    
+## [15] &quot;EcologyParameterValues_old&quot; &quot;economy&quot;                   
+## [17] &quot;EPV&quot;                        &quot;Glossary&quot;                  
+## [19] &quot;Groups&quot;                     &quot;Habitats&quot;                  
+## [21] &quot;HigherTaxonomy&quot;             &quot;Images&quot;                    
+## [23] &quot;Impacts&quot;                    &quot;invhst&quot;                    
+## [25] &quot;journals&quot;                   &quot;Journals_old&quot;              
+## [27] &quot;lfhsp&quot;                      &quot;NativeRanges&quot;              
+## [29] &quot;new_occ&quot;                    &quot;NewsItems&quot;                 
+## [31] &quot;NumInvPerReg&quot;               &quot;Occ2&quot;                      
+## [33] &quot;Occurrences&quot;                &quot;Occurrences2&quot;              
+## [35] &quot;Occurrences_bckup&quot;          &quot;old_occ&quot;                   
+## [37] &quot;PICES_LifeHist&quot;             &quot;PICES_Occ&quot;                 
+## [39] &quot;Polygons&quot;                   &quot;Potential_MisIDs&quot;          
+## [41] &quot;References_old&quot;             &quot;refs&quot;                      
+## [43] &quot;Regions&quot;                    &quot;SpeciesComments&quot;           
+## [45] &quot;SpeciesComments2&quot;           &quot;spimgs&quot;                    
+## [47] &quot;splinks&quot;                    &quot;Synonyms&quot;                  
+## [49] &quot;Table1&quot;                     &quot;Table2&quot;                    
+## [51] &quot;tables_fields&quot;              &quot;taxa&quot;                      
+## [53] &quot;taxa_cits&quot;                  &quot;taxanew&quot;                   
+## [55] &quot;taxon&quot;                      &quot;Taxonomy&quot;                  
+## [57] &quot;tbl_factsheets&quot;             &quot;tbl_species_new&quot;           
+## [59] &quot;users&quot;                      &quot;Vectors&quot;                   
+## [61] &quot;WebLinks&quot;                   &quot;WORMS_Common_Names&quot;        
+## [63] &quot;WORMS_Synonyms&quot;             &quot;WORMS_Taxonomy&quot;</code></pre>
 <pre class="r"><code># list fields in a table
 dbListFields(con, &quot;Taxonomy&quot;)</code></pre>
 <pre><code>##  [1] &quot;TXA_ITIS&quot;           &quot;TXA_Level&quot;          &quot;TXA_Name&quot;          
@@ -839,10 +837,10 @@ dbListFields(con, &quot;Taxonomy&quot;)</code></pre>
 ## [19] &quot;created_by&quot;         &quot;updated&quot;            &quot;updated_by&quot;</code></pre>
 <pre class="r"><code># return a whole table
 taxanew &lt;- dbReadTable(con, &quot;Taxonomy&quot;)</code></pre>
-<pre><code>## Warning in dbSendQuery(conn, statement, ...): unrecognized MySQL field type 7
-## in column 17 imported as character</code></pre>
-<pre><code>## Warning in dbSendQuery(conn, statement, ...): unrecognized MySQL field type 7
-## in column 19 imported as character</code></pre>
+<pre><code>## Warning in .local(conn, statement, ...): unrecognized MySQL field type 7 in
+## column 17 imported as character</code></pre>
+<pre><code>## Warning in .local(conn, statement, ...): unrecognized MySQL field type 7 in
+## column 19 imported as character</code></pre>
 <pre class="r"><code># get results of a query to a table
 sel_taxa &lt;- dbGetQuery(con, &quot;SELECT count(*) FROM Taxonomy WHERE TXA_Binomial IS NOT NULL;&quot;)</code></pre>
 <p>You can also send a query using dbSendQuery() for advanced queries
@@ -880,7 +878,7 @@ a.data.frame).</p>
 <p>Writing data to a database table. Using the existing connection and
 dataframe from before.</p>
 <pre class="r"><code>dbSendQuery(con, &quot;SET GLOBAL local_infile = true;&quot;) # this line gives us permission to load data from a file.  You will still have to have the proper permissions on the database to do this.</code></pre>
-<pre><code>## &lt;MySQLResult:12,1,4&gt;</code></pre>
+<pre><code>## &lt;MySQLResult:-1286580624,0,4&gt;</code></pre>
 <pre class="r"><code>dbWriteTable(con, &quot;taxanew&quot;, taxanew, overwrite=TRUE)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <p>Options for dbWriteTable include “append=TRUE”, “overwrite=TRUE”,
@@ -904,33 +902,33 @@ use the “dput” function we can transform an R object into a the command
 we’d need to recreate that structure.</p>
 <pre class="r"><code>first_5_taxanew &lt;- head(taxanew, 5)
 dput(first_5_taxanew)</code></pre>
-<pre><code>## structure(list(TXA_ITIS = -1153:-1149, TXA_Level = c(143L, 143L, 
-## 140L, 143L, 323L), TXA_Name = c(&quot;panamensis&quot;, &quot;philippina&quot;, &quot;Aglaeopheniidae&quot;, 
-## &quot;turdus&quot;, &quot;Naria&quot;), TXA_Binomial = c(&quot;Nereis panamensis&quot;, &quot;Macrorhynchia philippina&quot;, 
-## NA, &quot;Naria turdus&quot;, NA), TXA_Parent = c(165902L, 50409L, 718926L, 
-## -1149L, 72741L), TXA_Author = c(&quot;Fauchald 1877&quot;, &quot;Kirchenpauer, 1872 AphiaID&quot;, 
-## &quot;Marktanner-Turneretscher,&quot;, &quot;Lamarck 1810&quot;, &quot;Gray 1837&quot;), TXA_Year = c(NA_character_, 
+<pre><code>## structure(list(TXA_ITIS = c(-1138L, -1137L, -1135L, -1134L, -1133L
+## ), TXA_Level = c(143L, 142L, 143L, 143L, 142L), TXA_Name = c(&quot;pseudoargus&quot;, 
+## &quot;Duvaucelia&quot;, &quot;sp.&quot;, &quot;archaia&quot;, &quot;Heterogen&quot;), TXA_Binomial = c(&quot;Doris pseudoargus&quot;, 
+## NA, &quot;Gnorimosphaeroma sp.&quot;, &quot;Ascidia archaia&quot;, NA), TXA_Parent = c(78207L, 
+## 78471L, -236L, 159174L, 70304L), TXA_Author = c(&quot;Rapp 1827&quot;, 
+## &quot;Risso 1826&quot;, &quot;Wetzer et al. 2021&quot;, &quot;Sluiter 8901&quot;, &quot;E. von Martens, 1861&quot;
+## ), TXA_Year = c(NA_character_, NA_character_, NA_character_, 
+## NA_character_, NA_character_), TXA_CAAB = c(NA_integer_, NA_integer_, 
+## NA_integer_, NA_integer_, NA_integer_), USER = c(NA_character_, 
 ## NA_character_, NA_character_, NA_character_, NA_character_), 
-##     TXA_CAAB = c(NA_integer_, NA_integer_, NA_integer_, NA_integer_, 
-##     NA_integer_), USER = c(NA_character_, NA_character_, NA_character_, 
-##     NA_character_, NA_character_), TXA_Time = c(NA_character_, 
-##     NA_character_, NA_character_, NA_character_, NA_character_
-##     ), TXA_Group = c(&quot;Arthropoda&quot;, &quot;Cnidarians-Hydrozoans&quot;, &quot;Cnidarians-Hydrozoans&quot;, 
-##     &quot;Mollusks-Gastropods&quot;, &quot;Mollusks-Gastropods&quot;), TXA_ReleaseDate = c(&quot;2099-01-01&quot;, 
+##     TXA_Time = c(NA_character_, NA_character_, NA_character_, 
+##     NA_character_, NA_character_), TXA_Group = c(&quot;Mollusks-Nudibranchs&quot;, 
+##     &quot;Mollusks-Nudibranchs&quot;, &quot;Crustaceans-Isopods&quot;, &quot;Tunicates&quot;, 
+##     &quot;Mollusks-Gastropods&quot;), TXA_ReleaseDate = c(&quot;2099-01-01&quot;, 
 ##     &quot;2099-01-01&quot;, &quot;2099-01-01&quot;, &quot;2099-01-01&quot;, &quot;2099-01-01&quot;), 
 ##     TXA_ExpReleaseDate = c(NA_character_, NA_character_, NA_character_, 
 ##     NA_character_, NA_character_), TXA_Created_At = c(NA_character_, 
 ##     NA_character_, NA_character_, NA_character_, NA_character_
 ##     ), TXA_Updated_At = c(NA_character_, NA_character_, NA_character_, 
 ##     NA_character_, NA_character_), TXA_WoRMsID = c(NA_integer_, 
-##     NA_integer_, NA_integer_, NA_integer_, NA_integer_), TXA_ProfileStatus = c(NA_character_, 
-##     NA_character_, NA_character_, NA_character_, NA_character_
-##     ), created = c(&quot;2024-02-02 10:39:30&quot;, &quot;2024-02-02 10:39:30&quot;, 
-##     &quot;2024-02-02 10:39:30&quot;, &quot;2024-02-02 10:39:30&quot;, &quot;2024-02-02 10:39:30&quot;
-##     ), created_by = c(NA_integer_, NA_integer_, NA_integer_, 
-##     NA_integer_, NA_integer_), updated = c(&quot;2024-02-02 10:39:31&quot;, 
-##     &quot;2024-02-02 10:39:31&quot;, &quot;2024-02-02 10:39:31&quot;, &quot;2024-02-02 10:39:31&quot;, 
-##     &quot;2024-02-02 10:39:31&quot;), updated_by = c(NA_integer_, NA_integer_, 
+##     NA_integer_, NA_integer_, NA_integer_, NA_integer_), TXA_ProfileStatus = c(NA, 
+##     &quot;Started&quot;, NA, &quot;Started&quot;, NA), created = c(&quot;2023-11-16 10:42:11&quot;, 
+##     &quot;2023-11-16 10:42:11&quot;, &quot;2023-11-16 10:42:11&quot;, &quot;2023-11-16 10:42:11&quot;, 
+##     &quot;2023-11-16 10:42:11&quot;), created_by = c(NA_integer_, NA_integer_, 
+##     NA_integer_, NA_integer_, NA_integer_), updated = c(&quot;2023-11-16 10:42:11&quot;, 
+##     &quot;2023-11-16 10:42:11&quot;, &quot;2023-11-16 10:42:11&quot;, &quot;2023-11-16 10:42:11&quot;, 
+##     &quot;2023-11-16 10:42:11&quot;), updated_by = c(NA_integer_, NA_integer_, 
 ##     NA_integer_, NA_integer_, NA_integer_)), row.names = c(NA, 
 ## 5L), class = &quot;data.frame&quot;)</code></pre>
 <p>If I copy the output to that and assign it to an object..</p>
