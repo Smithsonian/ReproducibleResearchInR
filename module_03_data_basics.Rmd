@@ -1,12 +1,11 @@
 ---
+title: 'Module 3: Data Basics: Creating, Importing, & Exporting'
+author: "Brian P Steves"
+date: "`r Sys.Date()`"
 output:
-  html_document: 
+  html_document:
     keep_md: yes
 ---
-Reproducible Research, Spring 2021
-
-Module 3: Data Basics: Creating, Importing, & Exporting
-====================
 
 ## 1 Creating Data
 
