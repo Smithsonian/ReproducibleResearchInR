@@ -1,0 +1,484 @@
+---
+title: 'Module 4:  Filtering and Subsetting Data'
+author: "Brian P Steves"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    keep_md: yes
+---
+
+
+We briefly discussed selecting data within an object in Module 2.  Here we will discuss more advanced methods to subsetting data. Because most of the data we will be using in R will be in the form of data frames we will concentrate on data frame methods for filtering and subsetting.
+
+
+##  Determining the structure of an object
+
+In order to understand how to select portions of a data object, you will need to know details about the structure of that object first.  The str() function accomplishes that.
+
+```{r}
+# Create a series of equally sized vectors
+sites<-c("Site A", "Site B")
+dates<-as.Date(c("12Mar2013","04Apr2013"),"%d%b%Y")
+lat=c(45, 47)
+lon=c(-124, -125)
+treatment=c(T,F)
+
+# Combine the vectors into a data frame
+dat<-data.frame(sites, dates, lat, lon, treatment)
+
+# Use str() on some of the vectors and the data frame
+str(sites)
+str(lat)
+str(dat)
+
+# The name() function is similar but only provides the names of the various data frame columns
+names(dat)
+
+
+# You can also use name() to reassign the names of the data frame columns
+
+names(dat)<-c("SiteName", "VisitDate", "Latitude", "Longitude", "TreatmentApplied")
+
+str(dat)
+
+```
+
+
+## Head and Tail
+
+Large data frames take a long time to print out to the screen.  Because of this, sometimes you just want to view the first portion (the head) or the last portion (the tail) of a data frame.  To get a sense of what the data looks like.   
+
+```{r}
+
+data(iris)
+
+# How many rows of data using nrow()
+nrow(iris)
+
+# too much to show on screen
+
+
+# The head (beginning) of the data
+head(iris)
+
+
+# The tail (end) of the data
+tail(iris)
+
+# the defualt is 6 rows of data, but you can change this by specifing an n value
+
+head(iris, n=20)
+
+```
+
+##  Selecting Variables (data frame columns)
+
+### Selecting Single columns using Base R
+
+```{r}
+
+# By index
+dat[1]
+
+# By Name
+dat["SiteName"]
+
+# Using the $ operator
+
+dat$SiteName
+
+
+```
+
+### By Name
+
+``` {r}
+
+dat[c("SiteName","TreatmentApplied")]
+
+# Alternatively you can use matrix R,C notation
+
+dat[,c("SiteName","TreatmentApplied")]
+
+```
+
+### By column number like a matrix
+
+```{r}
+
+dat[,c(1,5)]
+
+```
+
+### By Logical Assignment
+
+```{r}
+dat[c(T,F,F,F,T)]
+
+```
+
+##  Droping Variables
+
+### Excluding Variables
+
+```{r}
+
+# we can use negative indexes
+
+dat[c(-1,-4)]
+
+# or we can use logical assignment
+
+dropcols<-names(dat) %in% c("Latitude","Longitude")
+dropcols
+
+dropcols2<-c("Latitude","Longitude")
+
+# this is the similar to a logical assignment for selecting columns but instead a "True" is a column we want to drop 
+dat[c(F,F,T,T,F)]
+
+# We use the ! to denote a logical negation or "not"
+# Here we specify that we want to select "not the dropcols"
+dat[!dropcols]
+
+```
+
+
+### Dropping Variables permentantly
+
+```{r}
+
+# One option is reassignment
+
+dat<-dat[!dropcols]
+
+# rebuild the data frame
+dat<-data.frame(sites, dates, lat, lon, treatment)
+names(dat)<-c("SiteName", "VisitDate", "Latitude", "Longitude", "TreatmentApplied")
+
+# the other option is to set some columns to null
+
+dat$TreatmentApplied <-NULL
+dat
+# But you can't do this with more than one column at a time
+
+dat[c("Latitude","Longitude")]<-NULL
+
+# However you can chain these
+
+dat$Latitude<-dat$Longitude<-NULL
+dat
+
+
+```
+
+## selecting columns using Tidyverse's 'dplyr' package.  
+
+```{r}
+library(dplyr)
+dat<-data.frame(sites, dates, lat, lon, treatment)
+names(dat)<-c("SiteName", "VisitDate", "Latitude", "Longitude", "TreatmentApplied")
+
+select(dat, SiteName, Latitude)
+
+```
+
+Note that the first input to the select function is the name of the data frame.
+
+The dplyr package uses a new type of notation called piping using "%>%" between expressions. This eliminates the need to nest functions within each other and streamlines a lot of coding.
+
+```{r}
+
+dat %>% select(Latitude, Longitude)
+```
+Note that we start with the data frame and then pipe in the 'select' function. In doing so we don't need to include the data frame name as the first input of the the select function. The result of this bit of code can then be piped into more dplyr expressions (more on that later)
+
+
+The dplyr select() function will accept a wide range of helper functions that help select columns based on criteria.
+
+```{r}
+
+head(iris)
+
+iris %>% select(contains("Sepal")) %>% head()
+
+iris %>% select(contains("Width")) %>% head()
+
+# all columns except "Species"
+iris %>% select(-Species) %>% head()
+
+# select Species and then the two middle measurement columns
+iris %>% select(Species, Sepal.Width:Petal.Length) %>% head()
+
+```
+
+
+
+##  Selecting Observations (data frame rows) firs using Base R
+
+``` {r}
+# loading some real data with lots of records
+library(readr)
+mtcars <- read_csv(readr_example("mtcars.csv"))
+
+str(mtcars)
+
+```
+
+### By index
+
+```{r}
+
+# select first two records
+mtcars[1:2,]
+
+# selecting second and fourth records
+mtcars[c(2,4),]
+
+# selecting not the third and fifth record
+mtcars[c(-3,-5),]
+
+```
+
+### By value
+
+``` {r}
+
+# Selecting cars with 4 cylinders
+mtcars[mtcars$cyl == 4,]
+
+# Using & to combine conditions
+mtcars[mtcars$cyl == 4 & mtcars$mpg > 30,]
+
+```
+
+##  Selecting Observations and Variables
+
+``` {r}
+# mpg and hp for 4 cylinder cars 
+
+mtcars[mtcars$cyl == 4,c("mpg","hp")]
+
+# Number of gears for 4 cylinder cars
+mtcars[mtcars$cyl == 4,]$gear
+```
+
+##  Subset Function
+
+The subset() function is a shortcut to selecting observations and variables
+
+``` {r}
+# this isn't any shorter than the previous method of finding the cars based on cyl, hp, mpg.
+
+subset(mtcars, cyl == 4, select=c(mpg, hp))
+
+# we can also drop columns using the select option
+
+subset(mtcars, cyl==4, select=c(-mpg, -hp))
+
+# Subset makes it easier to combine multiple conditions
+
+subset(mtcars, cyl==4 & mpg > 30 & hp > 100)
+
+# You can even do "OR" conditions using the "|" operator
+# here we are selecting where cyl  = 4 or mpg < 15
+
+subset(mtcars, cyl ==4 | mpg < 15)
+
+
+
+
+```
+ Remember you can combine a series of logical operators ( "|" and "&")
+ it helps if you know some logic to help simply your expressions
+ for example...
+ 
+ !(a & b) is the same as !a | !b
+ !(a | b) is the same as !a & !b 
+
+```{r}
+
+ subset(mtcars, !(cyl  == 4 & gear == 4))
+ 
+ # is the same as 
+
+ subset(mtcars, !cyl == 4 | !gear == 4 )
+
+ # and likewise
+
+ subset(mtcars, !(cyl == 4 | gear == 4))
+
+ # is the same as 
+
+ subset(mtcars, !cyl == 4 & !gear == 4)
+
+
+
+``` 
+
+You can also use the %in% operator to match multiple values at once.
+
+```{r}
+
+hp_of_interest<-c(110, 180, 245)
+subset(mtcars, hp %in% hp_of_interest)
+ 
+# is the same as 
+subset(mtcars, hp == 110 | hp == 180 | hp == 245)
+
+
+```
+
+## subsetting data using tidyverse's dplyr
+
+Use commas to separate "and" statements.
+Use | to separate "or" statements.
+
+```{r}
+mtcars %>% filter(hp == 110)
+
+mtcars %>% filter(hp < 110,cyl == 4, wt>3)
+
+mtcars %>% filter(hp > 100 | cyl == 4)
+
+mtcars %>% filter(hp %in% hp_of_interest)
+```
+
+## combining dplyr filter and select
+
+```{r}
+mtcars %>% filter(cyl == 4) %>% select(cyl, mpg, hp)
+```
+
+
+
+
+##  Random samples in Base R
+Sometimes you will want a random subset of your data.  To do this, use the sample() function without replacement.
+
+```{r}
+
+# first determine how many rows of data you have
+rowcount<-nrow(mtcars)
+
+# select two random rows
+randomrows<-sample(rowcount, 2)
+
+# use the "randomrows" to select those rows from the data frame
+mtcars[randomrows,]
+
+
+``` 
+
+## Select random rows in dplyr using slice_sample() function
+
+We'll randomly select two rows and do it twice so show that they are random
+
+```{r}
+mtcars %>% slice_sample(n=2)
+mtcars %>% slice_sample(n=2)
+```
+Can also slice a proportion of the data.  Here 10% of 32 records returns 3 random records
+```{r}
+mtcars %>% slice_sample(prop=0.1)
+```
+
+
+
+## Head, Tail, Glimpse with dplyr
+
+head and tail can be passed into the pipe using %>%
+
+```{r}
+
+iris %>% head()
+
+iris %>% tail()
+
+iris %>% head(n=20)
+
+
+```
+
+dplyr also has the "glimpse()" function that gives an alternative view of the data
+
+```{r}
+iris %>% glimpse()
+
+```
+
+
+##  Assigning and Subsetting
+
+Sometimes you want to select data so that you can reassign values in the data frame. This is useful when you are cleaning up your data.
+
+```{r}
+
+# for example, sometimes you want to replace NA values with 0's
+
+data3<-data.frame(site=c(1,1,1,2,2,2),count=c(2,4,3,NA,5,NA))
+data3
+
+# to select rows where count is NA you can use the is.na() function
+
+data3[is.na(data3$count),]
+
+# to set count to zero where count was NA
+
+data3[is.na(data3$count),]$count<-0
+
+data3
+
+```
+
+This is much easier with dplyr using mutate() and replace()
+
+The usage is replace(variable, condition, replacement)
+
+```{r}
+data3<-data.frame(site=c(1,1,1,2,2,2),count=c(2,4,3,NA,5,NA))
+
+data3 %>% mutate(count = replace(count, is.na(count), 0))
+data3 %>% mutate(count = replace(count, site==2, 100))
+```
+
+Mutate can also be used to create new variables
+```{r}
+
+iris %>% mutate(Sepal.Area = Sepal.Length * Sepal.Width)
+
+```
+
+
+
+##  Ordering
+
+Ordering data in base R is annoying. I'm not even going to bother showing it to you. But it's pretty simple with dplyr's arrange() function.
+
+```{r}
+
+# ascending
+mtcars %>% arrange(mpg)  
+
+#descending
+mtcars %>% arrange(desc(mpg))
+
+
+```
+
+
+## Bonus Material
+
+Here's a cheat sheet for wrangling data with dplyr.  
+
+https://rstudio.github.io/cheatsheets/data-transformation.pdf
+
+We still have much to cover with dplyr as well as the related package called tidyr.
+
+## Homework
+
+Using the data set you found, write  R code to create 3 interesting subsets of data that you might want to use for later analysis.  Use which ever methods make the most sense to you but be sure to assign these subsets to new variables with meaningful names. Remember to add code to import this data first.
+
+
+
+
