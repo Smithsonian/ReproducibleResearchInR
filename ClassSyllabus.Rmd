@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 3. [Creating, Importing, and Exporting Data](Module_03_Data_Basics.html)
 
-## 4. Filtering and Subsetting Data
+## 4. [Filtering and Subsetting Data](Module_04_Filtering_and_Subsetting.html)
 
 ## 5. Resshaping Data
 
