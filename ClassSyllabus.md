@@ -11,7 +11,7 @@ output:
 
 # Modules
 
-## 1. [Introduction to R](https://sinet.sharepoint.com/:u:/r/sites/SERC-Invasions-ReproducibleResearchinR-Fall2024/Shared%20Documents/Reproducible%20Research%20in%20R%20-%20Fall%202024/Module_01_Intro_to_R.html?csf=1&web=1&e=4828UT)
+## 1. [Introduction to R](Module_01_Intro_to_R.html)
 
 ## 2. [Reproducible Research and Data](Module_02_Reproducible_Research_and_Data.html)
 
