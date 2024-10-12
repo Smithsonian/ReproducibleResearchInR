@@ -1,7 +1,7 @@
 ---
 title: 'Module 1:  Introduction to R'
 author: "Brian P Steves"
-date: "2024-09-27"
+date: "2024-10-09"
 output:
   html_document:
     keep_md: yes

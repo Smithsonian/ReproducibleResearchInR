@@ -1,0 +1,4 @@
+- source: OregonMushrooms.qmd
+  quarto-pub:
+    - id: 427f9a81-0dfd-4e52-9061-0d063d1ddc28
+      url: 'https://bsteves.quarto.pub/mushrooms-of-oregon'

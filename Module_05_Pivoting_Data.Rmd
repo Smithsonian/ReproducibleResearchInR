@@ -1,0 +1,67 @@
+---
+title: 'Module 5:  Reshaping Data with Tidyr'
+author: "Brian P Steves"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    keep_md: yes
+---
+
+
+
+Module 5: Reshaping data with Tidyr
+====================
+# Pivoting Data
+
+  The terms for this have changed several times within the tidyverse (melt, reshape, spread, gather).  Currently the tidyr packages uses the terms pivot_longer and pivot_wider.  I think this is in reference to pivot tables found in Excel.
+
+
+Recall, that in Module 1 we talked about wide and narrow data formats.  This is how you can switch between them when necessary.
+
+
+# Pivot_wide
+
+I generally prefer to have my data in the narrow (long) format and sometimes need to transform that data into the wide format.  This is where the pivot_wide() function comes in.
+pivot_wider has serveral parameters..
+names_from = the column you want to become column names
+values_from = the column you want to use for the cells
+values_fill = a value to use for missing data
+values_fn = a function to apply to values
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+mtcars %>% select(cyl, mpg, hp) %>% arrange(hp) %>% pivot_wider(names_from=cyl, values_from=mpg, values_fn=mean)
+
+```
+
+
+## Pivot_longer
+
+
+```{r}
+iris
+head(iris)
+iris_long <- iris %>% pivot_longer(Sepal.Length:Petal.Width, names_to="Measurement", values_to="Size_mm")
+iris_long
+```
+Bonus, we can split out the leaf type from the measurement dimension in the "measurement" column we just created. Luckily the two are already delineated by a "." and the separate() function will find that and use it.
+```{r}
+iris_long %>% separate(Measurement, c("Leaf Type", "Dimension"))
+
+```
+
+```
+
+
+
+## Homework
+
+Determine if your data set(s) are narrow or wide.  Use tidyr's pivot_wide() and pivot_long() functions to transform your data.
+
+For example, if your data is narrow, transform a subset of your data into a more useful and more readable wide table.
+
+Likewise, if your data is wide, transform it to narrow format
+
+
+

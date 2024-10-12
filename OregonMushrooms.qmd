@@ -1,0 +1,209 @@
+---
+title: "Mushrooms of Oregon"
+author: "Brian Steves"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+format: html
+editor: visual
+---
+
+## GBIF Mushroom Data for Oregon
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(maps)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+dat <- read_tsv("0006405-241007104925546.csv")
+
+# Load the rvest package
+library(rvest)
+
+# URL of the web page
+url <- "https://salishmushrooms.com/a-list-of-edible-mushrooms-in-washington-oregon-and-british-columbia/"
+
+# Read the HTML content from the web page
+webpage <- read_html(url)
+
+# Extract the text from all <li> elements
+edible_mushroom_names <- webpage %>%
+  html_nodes("li") %>%
+  html_text()
+
+edible_mushroom_names <- data.frame(Scientific_Name = edible_mushroom_names)
+
+  
+edible_mushroom_names$edible <- TRUE
+
+dat_edible <- dat %>% full_join(edible_mushroom_names, by=c("verbatimScientificName" = "Scientific_Name")) %>% filter(edible = TRUE)
+dat_chant <- dat_edible %>% filter(genus == "Craterellus")
+dat_bolete <- dat_edible %>% filter(genus == "Boletus")
+dat_oyster <- dat_edible %>% filter(genus == "Pleurotus")
+dat_morel <- dat_edible %>% filter(genus == "Morchella")
+  
+# list from https://salishmushrooms.com/a-list-of-edible-mushrooms-in-washington-oregon-and-british-columbia/
+```
+
+## Chanterelle Mushrooms
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Cantharellus_formosus_174975_Belfair.jpg/320px-Cantharellus_formosus_174975_Belfair.jpg){fig-align="center"}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+taxa <- "Chanterelles"
+sub_dat <- dat_chant
+
+# Get the map data for the USA
+usa_map <- map_data("state")
+
+# Filter the map data for Oregon, Washington, and California
+west_coast_map <- subset(usa_map, region %in% c("oregon"))
+
+# Plot the map with ggplot2
+mushmap <- ggplot() +
+  geom_polygon(data = west_coast_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+  geom_point(data = sub_dat, aes(x = decimalLongitude, y = decimalLatitude), color = "red", size = 2) +
+  coord_fixed(1.3) +
+  theme_minimal() +
+  labs(title = paste(taxa, "Locations in Oregon"),
+       x = "Longitude", y = "Latitude")
+
+mushmap
+
+month_chart <- ggplot(sub_dat, aes(x = month)) +
+  geom_bar(stat = "count", width = 1, fill = "blue", color = "black", alpha = 0.7) +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  theme_minimal() +
+  labs(title = paste("Histogram of", taxa, "Observations by Month"),
+       x = "Month",
+       y = "Frequency")
+
+month_chart
+```
+
+## Morel Mushrooms
+
+Looks like morels are actually Ascomycetes and not included in this data set from GBIF.  Need to run a new query.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+taxa <- "Morels"
+sub_dat <- dat_morel
+
+# Get the map data for the USA
+usa_map <- map_data("state")
+
+# Filter the map data for Oregon, Washington, and California
+west_coast_map <- subset(usa_map, region %in% c("oregon"))
+
+# Plot the map with ggplot2
+mushmap <- ggplot() +
+  geom_polygon(data = west_coast_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+  geom_point(data = sub_dat, aes(x = decimalLongitude, y = decimalLatitude), color = "red", size = 2) +
+  coord_fixed(1.3) +
+  theme_minimal() +
+  labs(title = paste(taxa, "Locations in Oregon"),
+       x = "Longitude", y = "Latitude")
+
+mushmap
+
+month_chart <- ggplot(sub_dat, aes(x = month)) +
+  geom_bar(stat = "count", width = 1, fill = "blue", color = "black", alpha = 0.7) +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  theme_minimal() +
+  labs(title = paste("Histogram of", taxa, "Observations by Month"),
+       x = "Month",
+       y = "Frequency")
+
+month_chart
+```
+
+
+## Bolete Mushrooms
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/%28Gemeine_Steinpilz%29_Boletus_edulis.jpg/320px-%28Gemeine_Steinpilz%29_Boletus_edulis.jpg){fig-align="center"}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+taxa <- "Boletes"
+sub_dat <- dat_bolete
+
+# Get the map data for the USA
+usa_map <- map_data("state")
+
+# Filter the map data for Oregon, Washington, and California
+west_coast_map <- subset(usa_map, region %in% c("oregon"))
+
+# Plot the map with ggplot2
+mushmap <- ggplot() +
+  geom_polygon(data = west_coast_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+  geom_point(data = sub_dat, aes(x = decimalLongitude, y = decimalLatitude), color = "red", size = 2) +
+  coord_fixed(1.3) +
+  theme_minimal() +
+  labs(title = paste(taxa, "Locations in Oregon"),
+       x = "Longitude", y = "Latitude")
+
+mushmap
+
+month_chart <- ggplot(sub_dat, aes(x = month)) +
+  geom_bar(stat = "count", width = 1, fill = "blue", color = "black", alpha = 0.7) +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  theme_minimal() +
+  labs(title = paste("Histogram of", taxa, "Observations by Month"),
+       x = "Month",
+       y = "Frequency")
+
+month_chart
+```
+
+## Oyster Mushrooms
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+taxa <- "Oyster Mushrooms"
+sub_dat <- dat_oyster
+
+# Get the map data for the USA
+usa_map <- map_data("state")
+
+# Filter the map data for Oregon, Washington, and California
+west_coast_map <- subset(usa_map, region %in% c("oregon"))
+
+# Plot the map with ggplot2
+mushmap <- ggplot() +
+  geom_polygon(data = west_coast_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
+  geom_point(data = sub_dat, aes(x = decimalLongitude, y = decimalLatitude), color = "red", size = 2) +
+  coord_fixed(1.3) +
+  theme_minimal() +
+  labs(title = paste(taxa, "Locations in Oregon"),
+       x = "Longitude", y = "Latitude")
+
+mushmap
+
+month_chart <- ggplot(sub_dat, aes(x = month)) +
+  geom_bar(stat = "count", width = 1, fill = "blue", color = "black", alpha = 0.7) +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  theme_minimal() +
+  labs(title = paste("Histogram of", taxa, "Observations by Month"),
+       x = "Month",
+       y = "Frequency")
+
+month_chart
+```
+
+### Ideas
+
+Elevation data seems to be missing. Either grab the data directly from iNaturalist or use a DEM (digital elevation model) to deteremine elevations.
+
+Make a grid on the map and calculate the richness per grid cell of mushrooms and edible mushrooms. Choropleth maps. Maybe use County instead.
+
+Look for hotspots and compare to popular recreation areas
+
+Data Citation:
+
+GBIF.org (10 October 2024) GBIF Occurrence Download <https://doi.org/10.15468/dl.szvgzw>
+
+Edible species list from <https://salishmushrooms.com/a-list-of-edible-mushrooms-in-washington-oregon-and-british-columbia/>
