@@ -19,26 +19,29 @@ library(maps)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 dat <- read_tsv("0006405-241007104925546.csv")
 
-# Load the rvest package
-library(rvest)
+# # Load the rvest package
+# library(rvest)
+# 
+# # URL of the web page
+# url <- "https://salishmushrooms.com/a-list-of-edible-mushrooms-in-washington-oregon-and-british-columbia/"
+# 
+# # Read the HTML content from the web page
+# webpage <- read_html(url)
+# 
+# # Extract the text from all <li> elements
+# edible_mushroom_names <- webpage %>%
+#   html_nodes("li") %>%
+#   html_text()
+# 
+# edible_mushroom_names <- data.frame(Scientific_Name = edible_mushroom_names)
+#
+# write_csv(edible_mushroom_names, "edible_mushroom_names.csv")
 
-# URL of the web page
-url <- "https://salishmushrooms.com/a-list-of-edible-mushrooms-in-washington-oregon-and-british-columbia/"
-
-# Read the HTML content from the web page
-webpage <- read_html(url)
-
-# Extract the text from all <li> elements
-edible_mushroom_names <- webpage %>%
-  html_nodes("li") %>%
-  html_text()
-
-edible_mushroom_names <- data.frame(Scientific_Name = edible_mushroom_names)
-
+edible_mushroom_names <- read_csv("edible_mushroom_names.csv")
   
 edible_mushroom_names$edible <- TRUE
 
-dat_edible <- dat %>% full_join(edible_mushroom_names, by=c("verbatimScientificName" = "Scientific_Name")) %>% filter(edible = TRUE)
+dat_edible <- dat %>% full_join(edible_mushroom_names, by=c("verbatimScientificName" = "Scientific_Name")) %>% filter(edible == TRUE)
 dat_chant <- dat_edible %>% filter(genus == "Craterellus")
 dat_bolete <- dat_edible %>% filter(genus == "Boletus")
 dat_oyster <- dat_edible %>% filter(genus == "Pleurotus")
@@ -86,7 +89,7 @@ month_chart
 
 ## Morel Mushrooms
 
-Looks like morels are actually Ascomycetes and not included in this data set from GBIF.  Need to run a new query.
+Looks like morels are actually Ascomycetes and not included in this data set from GBIF. Need to run a new query.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -120,7 +123,6 @@ month_chart <- ggplot(sub_dat, aes(x = month)) +
 
 month_chart
 ```
-
 
 ## Bolete Mushrooms
 

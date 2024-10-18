@@ -1,0 +1,207 @@
+---
+title: "Module 7 More Dplyr and Tidyr"
+author: "Brian P Steves"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## dplyr verbs
+
+The dplyr package provides a lot of methods (verbs) for helping to work with data.
+
+### filter()
+
+filter() is equivalent to subset()
+
+```{r}
+library(dplyr)
+library(Lahman)
+# grabbing baseball data from the Lahman package
+
+
+# select players from the Seattle Mariners in 1990
+Batting %>% filter(teamID == "SEA", yearID == 1990) %>% head()
+
+```
+
+
+### arrange()
+
+arrange() allows you to reorder the data
+
+
+```{r}
+
+# order data by team then year then by descending number of runs (r) 
+Batting %>% arrange(teamID, yearID, desc(R)) %>% head()
+
+```
+
+### select()
+
+select() lets you specify which columns you want to return
+
+
+```{r}
+# select id, year, team and r only
+Batting %>% select(playerID, yearID, teamID, R) %>% head()
+
+
+# select everything but year and team
+Batting %>% select(-c(yearID, teamID)) %>% head()
+
+
+# select id through team
+Batting %>% select(playerID:teamID) %>% head()
+
+
+```
+
+### mutate()
+mutate() allows you to add new columns
+```{r}
+#add a runs per game column and select only the id and runs_per_game column for return
+Batting %>% mutate(runs_per_game = R/G) %>% select(playerID, runs_per_game) %>% head()
+
+
+```
+### summarize()
+We already showed an example of summarize().  It really needs to be used in conjunction with group_by() to be of much use.  Without group_by() with out it, summarize() returns a single row of results
+
+```{r}
+# calculate the mean number of games played per year across all players
+Batting %>% summarize(mean_g = mean(G)) 
+```
+
+
+### group_by()
+
+Select() and arrange() aren't affected by group_by() but filter(), mutate(), and summarize() are.
+
+For example can group by team and then summarize
+
+```{r}
+
+Batting %>% group_by(teamID) %>% summarize(mean_g = mean(G)) %>% head()
+```
+
+
+## summary functions
+
+There are a variety of summary functions that can be used with summarize().   These include mean, sd, var, min, max, median, first, last, nth, n, and n_distinct.  The last two n and n_distinct are particularly useful.
+
+
+n() gives you the count of data rows and doesn't take an arguement
+n_distinct() gives you the count of unique values and requires an arguement
+
+```{r}
+
+# number of players by team
+Batting %>% group_by(teamID) %>% summarize(count = n()) %>% head()
+
+# can be written as 
+Batting %>% group_by(teamID) %>% tally() %>% head()
+
+# also be written as
+Batting %>% count(teamID) %>% head()
+
+# number of years each teamID played
+Batting %>% group_by(teamID) %>% summarize(year_count = n_distinct(yearID)) %>% head()
+
+```
+
+## window functions
+
+The mutate() verb we mentioned early has a wide range of window functions you can use which are very helpful.
+
+Some shift the data up or down... (lead, lag)
+
+```{r}
+measdat <- data.frame(observation = c(1,2,3,4,5,6), size = c(10, 13, 11, 17, 10, 9) )
+
+#shifting up
+measdat %>% mutate(next_size = lead(size))
+
+#shifting down
+measdat %>% mutate(last_size = lag(size))
+
+```
+
+
+Some are used to rank data... (dense_rank, min_rank, percent_rank, row_number, ntile, between, ntile)
+
+```{r}
+# rank the size measurements
+measdat %>% mutate(dense_rank(size))
+
+```
+
+
+Some do cumulative values .. (cumall, cumany, cummean, cumsum, cummax, cumprod)
+
+```{r}
+
+# running mean of size measurements
+measdat %>% mutate(cummean(size))
+
+```
+
+
+## join
+If you need to combine data from two tables based on a common field you can use the various join functions. The basic format is like the following...
+
+If you don't specify a "by" then dplyr will match based on common column names
+
+```{r}
+# two small data frames for the following examples
+x <- data.frame(id=c(1,2,3,4,5,6), name=c("Fred","Bob","Jim","Ted","Jane","Sue"))
+x
+
+y <- data.frame(id=c(1,2,5,6,7,8), score=c(78,84,92,83,45,93))
+y
+
+```
+
+
+### inner_join()
+inner_join() returns all columns from where the two data frames have matching records.
+
+```{r}
+
+inner_join(x,y, by ="id")
+
+```
+
+### left_join()
+left_join() returns all columns from the two data frames.  But it returns all the records from the first data frame (the left one) and only those from the second data frame where there is a match
+
+```{r}
+
+left_join(x,y, by ="id")
+
+```
+
+### semi_join()
+semi_join() returns all rows from the first data frame where there are matching values in the second data frame and it only keeps the columns from the first data frame.
+
+```{r}
+
+semi_join(x,y, by ="id")
+
+```
+### anti_join()
+anti_join() returns all the rows from the first data frame where there are no matches in the second data frame and it only keeps the columns in the first data frame.
+
+```{r}
+
+anti_join(x,y, by ="id")
+
+```
+
+
+
+
+
+
+
+
