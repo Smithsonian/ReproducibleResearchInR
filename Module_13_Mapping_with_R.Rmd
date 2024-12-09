@@ -1,0 +1,200 @@
+---
+title: 'Module 13: Mapping with R'
+author: "Brian P Steves"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# hide warnings
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+There are a lot of ways to create maps in R.  In fact, there are many different packages to choose from when it comes to making maps.  In this module, I will cover some of the basics with a few packages to give you an overview of the options.
+
+There are also lots of tutorials online if you want more information.
+
+* https://ggplot2.tidyverse.org/reference/coord_map.html
+* http://cran.r-project.org/web/views/Spatial.html
+* http://rpubs.com/alobo/getmapCRS
+* https://r.geocompx.org/
+
+
+## Large scale maps with polical boudaries (world, countries, counties)
+
+Sometimes you want a very simple clean map with just a few polical boundries.   This is particularly useful for maps on a large scale (the world, the state, the county) to show where your study site is, but it's not so good if you want to show your particular sampling locations around a small pond.
+
+
+### Simple maps using "maps" package
+
+The simplist way to make a map is using the map() function in the "maps" package.  This package comes with map data for the countries of the world, US states, US counties, and a select few other country maps.
+
+```{r}
+library(maps)
+# simple map of the world
+map("world")  
+
+# add a point (roughly portland)
+pdx_lat <- 45.52
+pdx_lon <- -122.68
+points(pdx_lon, pdx_lat, col="red", pch=20, cex=1)
+
+# If you want, you can zoom into the map by altering the xlim and ylim.  Let's zooom in to the Pacific Northwest.
+map("world", xlim=c(-130,-115), ylim=c(40,50))
+
+# Yick, the resolution isn't so hot.  Let's try using the state level maps.
+map("state", region=c("Washington", "Oregon"))
+
+# Add a point for Portland.
+points(pdx_lon, pdx_lat, col="red", pch=20, cex=3)
+
+# Now let's add the counties to Oregon
+map("county", "Oregon", add=T)
+```
+
+## Plotting Shapefiles
+
+If you want to move beyond the limits of the maps packacke you'll want to be able to plot shapefiles.  If you are familiar with GIS you probably know what those are.  If not, just think of them as vectorized map files.
+
+### Plotting a shapefile using "terra" package
+
+```{r}
+library(terra)
+
+shpfile <- "H:/Geoprocessing_Shapefiles/Countries.shp"
+countries <- vect(shpfile)
+plot(countries)
+USA <- vect(shpfile, query="SELECT OBJECTID_1, CNTRY_NAME FROM countries WHERE CNTRY_NAME = 'USA'")
+plot(USA, col="red")
+
+# change the projection
+countries <- project(countries, "+proj=laea +lat_0=45 +lon_0=-100")
+plot(countries)
+
+```
+
+### Plotting a shapefile using the "sf" package
+
+```{r}
+library(sf)
+countries_sf <- st_read("H:/Geoprocessing_Shapefiles/Countries.shp")
+plot(countries_sf)
+
+#many plots, one per column of the data
+# just plot the country names
+plot(countries_sf["CNTRY_NAME"])
+plot(countries_sf[3])
+
+# just plot the country names
+plot(countries_sf["FIRST_FIRS"])
+
+# Let's plot the USA in red
+USA_sf <- countries_sf[countries_sf$CNTRY_NAME == "USA",]
+plot(USA_sf[1], col="red")
+
+```
+
+### Plotting a shapefile using the "ggplot2" package
+```{r}
+library(ggplot2)
+library(sf)
+countries_sf <- st_read("H:/Geoprocessing_Shapefiles/Countries.shp")
+m <- ggplot() + geom_sf(data=countries_sf)
+
+# color in the United State blue
+USA_sf <- countries_sf[countries_sf$CNTRY_NAME == "USA",]
+m <- m + geom_sf(data=USA_sf, fill="blue")
+m
+
+# add a point for Portland
+m <- m + geom_point(aes(x=-122.68, y=45.52), color="red", size=3)
+m
+
+# zoom in on the Pacific Northwest
+m <- m + coord_sf(xlim=c(-130,-115), ylim=c(40,50))
+m
+
+
+# change the projection to laea
+countries_sf2 <- st_transform(countries_sf,  "+proj=laea +lat_0=45 +lon_0=-100")
+m <- ggplot() + geom_sf(data=countries_sf2)
+m
+
+
+```
+Of course you could use specialized shapefiles at a much smaller scale if you wanted.
+
+### Plot raster file with "terra" package
+```{r}
+library(terra)
+r <- rast(system.file("ex/elev.tif", package="terra"))
+plot(r)
+
+# add a point at 50 N, 6 E
+points(6, 50, col="red", pch=19, cex=1.5)
+
+# change the color scheme to raibow
+plot(r, col=rainbow(100))
+
+```
+
+
+### Plot a dynamic map using the "leaflet" package
+
+#### Note that the Leaflet map doesn't seem to show up Teams, but it does show up if you save the file and open it in a browser.
+
+```{r}
+library(leaflet)
+library(htmlwidgets)
+center <- c(45, -124)
+zoom <- 6
+m <- leaflet() %>% setView(lng = center[2], lat = center[1], zoom = zoom) %>% addTiles()
+# some 10 random points in Oregon
+points <- data.frame(lat = runif(10, 42, 46), lon = runif(10, -124, -116))
+# name the points
+points$name <- paste0("Point ", 1:10)
+# add the points to the map with a popup that shows the name of the point formatted as HTML
+m <- m %>% addMarkers(data = points, lng = ~lon, lat = ~lat, popup = ~paste0("Name: ", name, "<br>Lat: ", lat, "<br>Lon: ", lon))
+m
+
+```
+
+
+### Plot the counties of the North Carolina along with 100 random points
+```{r}
+nc <- st_transform(st_read(system.file("shape/nc.shp", package="sf")), 2264) 
+
+# convert nc to geographic (lat/lon) coordinates
+nc <- st_transform(nc, 4326)
+
+nc_map <- ggplot() + geom_sf(data=nc)
+nc_map
+
+# add 10 random points
+points <- data.frame(lon = runif(10, st_bbox(nc)[1], st_bbox(nc)[3]), lat = runif(10, st_bbox(nc)[2], st_bbox(nc)[4]))
+# add the points to the map
+nc_map2 <- nc_map + geom_point(data=points, aes(x=lon, y=lat), color="red", size=2)
+# show the map
+nc_map2
+
+# determine which county each point is in
+points <- st_as_sf(points, coords=c("lon", "lat"), crs=st_crs(nc))
+points <- st_join(points, nc)
+
+# Extract coordinates from the geometry column
+points_coords <- st_coordinates(points)
+points$lon <- points_coords[, 1]
+points$lat <- points_coords[, 2]
+
+# add the points to the map, colored by county
+nc_map3 <- nc_map + geom_point(data=points, aes(x=lon, y=lat, color=NAME), size=2)
+nc_map3
+
+# format the point data into a table
+points_table <- data.frame(points$lat, points$lon, points$NAME)
+# replace NA values with "" in the county column
+points_table$points.NAME[is.na(points_table$points.NAME)] <- ""
+colnames(points_table) <- c("Latitude", "Longitude", "County")
+knitr::kable(points_table)
+
+```

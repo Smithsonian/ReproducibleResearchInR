@@ -42,6 +42,7 @@ edible_mushroom_names <- read_csv("edible_mushroom_names.csv")
 edible_mushroom_names$edible <- TRUE
 
 dat_edible <- dat %>% full_join(edible_mushroom_names, by=c("verbatimScientificName" = "Scientific_Name")) %>% filter(edible == TRUE)
+write_csv(dat_edible, "dat_edible.csv")
 dat_chant <- dat_edible %>% filter(genus == "Craterellus")
 dat_bolete <- dat_edible %>% filter(genus == "Boletus")
 dat_oyster <- dat_edible %>% filter(genus == "Pleurotus")
@@ -58,43 +59,6 @@ dat_morel <- dat_edible %>% filter(genus == "Morchella")
 
 taxa <- "Chanterelles"
 sub_dat <- dat_chant
-
-# Get the map data for the USA
-usa_map <- map_data("state")
-
-# Filter the map data for Oregon, Washington, and California
-west_coast_map <- subset(usa_map, region %in% c("oregon"))
-
-# Plot the map with ggplot2
-mushmap <- ggplot() +
-  geom_polygon(data = west_coast_map, aes(x = long, y = lat, group = group), fill = "white", color = "black") +
-  geom_point(data = sub_dat, aes(x = decimalLongitude, y = decimalLatitude), color = "red", size = 2) +
-  coord_fixed(1.3) +
-  theme_minimal() +
-  labs(title = paste(taxa, "Locations in Oregon"),
-       x = "Longitude", y = "Latitude")
-
-mushmap
-
-month_chart <- ggplot(sub_dat, aes(x = month)) +
-  geom_bar(stat = "count", width = 1, fill = "blue", color = "black", alpha = 0.7) +
-  scale_x_continuous(breaks = 1:12, labels = month.abb) +
-  theme_minimal() +
-  labs(title = paste("Histogram of", taxa, "Observations by Month"),
-       x = "Month",
-       y = "Frequency")
-
-month_chart
-```
-
-## Morel Mushrooms
-
-Looks like morels are actually Ascomycetes and not included in this data set from GBIF. Need to run a new query.
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-
-taxa <- "Morels"
-sub_dat <- dat_morel
 
 # Get the map data for the USA
 usa_map <- map_data("state")

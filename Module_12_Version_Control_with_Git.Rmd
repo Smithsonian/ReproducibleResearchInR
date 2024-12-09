@@ -1,0 +1,67 @@
+---
+title: 'Module 12: Version Control with Git'
+author: "Brian P Steves"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+## Git
+
+Git is a distributed revision control system used for source code management.  It allows mulitple users to work on the same project and to track all changes through time.  Even if you use Git all my yourself, the ability to go back, view and then roll back to earlier versions of code is very useful if you ever end up on a programming wild goose chase.
+
+I don't have a module *per se* for this topic.  Rather, I'll point you to these links and then do a demonstration in class on Monday.
+
+https://docs.posit.co/ide/user/ide/guide/tools/version-control.html
+
+https://rfortherestofus.com/2021/02/how-to-use-git-github-with-r
+
+http://www.molecularecologist.com/2013/11/using-github-with-r-and-rstudio/
+
+### The Basics
+
+1. Set up new GitHub repository
+2. Create a new project in RStudio and have it clone the GitHub repository
+3. Modify the .gitignore file to exclude certain files (large data files, config files with passwords, etc.)
+4. Create some scripts
+5. Add new files and changes  `git add -A`
+6. Commit the changes  `git commit -m "add a message here about the changes"`
+7. Push the commit to GitHub    `git push`
+
+if you need to work on another computer or if you are working with others
+8. Pull any new commits from GitHub   `git pull`
+
+
+
+
+## Github
+
+Github is a hosting site for GIT based programming repositories.  Think of it as an advanced Dropbox type site.   GitHub adds a few features to your Git repository..
+
+1. Easy access your repository from the web
+2. Viewing your files (scritps, markdown, data frames, images, pdfs) directly
+3. Issue tracker
+4. History viewer (view multiple versions of a file at once)
+
+There are three basic options.. 
+
+1. Free if you leave your repositories public
+2. Pay monthly fee if you want your repositories private
+3. Use your employer's plan.  Sign up with your si.edu email address and inquire with OCIO to be added to the Smithsonian GitHub.  As a bonus, you can now have private personnel repositories under your own name.
+
+I'm cheap, before being added to the Smithsonian GitHub, I just left my repositories open to the public, but I made sure that no sensitive data or information about passwords could be found in the repositories.
+
+In fact, I've written all the code for these modules using R Markdown and all of my Rmd files can be found in the following github repository.
+
+https://github.com/Smithsonian/ReproducibleResearchInR
+
+
+## Homework
+
+I highly recommend everyone sign up for a free GitHub account.
+
+https://github.com/
+
+If you are comfortable enough with git and github it would be an ideal place to host your final report files.
+
+
