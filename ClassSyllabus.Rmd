@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 4. [Filtering and Subsetting Data](Module_04_Filtering_and_Subsetting.html)
 
-## 5. Resshaping Data
+## 5. [Resshaping Data]
 
 ## 6. Writing R Scripts
 
